@@ -9,11 +9,12 @@ import (
 )
 
 func main() {
-	var romansCheck bool
-	
+		
 	reader := bufio.NewReader(os.Stdin)
 	
 	for {
+		romansCheck := false
+		
 		fmt.Print("Введите значения: ")
 		userInput, err := reader.ReadString('\n')
 		if err != nil {
