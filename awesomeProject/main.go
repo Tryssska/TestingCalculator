@@ -10,30 +10,32 @@ import (
 
 func main() {
 
-	var (
-		firstDigit, secondDigit, operator string
-		splitInput                        []string
-		romansCheck                       = false
-	)
-
 	reader := bufio.NewReader(os.Stdin)
 	for {
+
+		var (
+			firstDigit, secondDigit, operator string
+			splitInput                        []string
+			romansCheck                       = false
+		)
+
+		fmt.Print("Введите значения: ")
 		userInput, err := reader.ReadString('\n')
 		if err != nil {
 			panic(err)
 		}
+
 		userInput = strings.Trim(userInput, "\n")
-		if len(userInput) < 5 {
+		splitInput = strings.Split(userInput, " ")
+		if len(splitInput) < 3 {
 			panic("неверный ввод")
 		}
-
-		splitInput = strings.Split(userInput, " ")
 
 		if _, ok := Utils.Romans[splitInput[0]]; ok {
 			romansCheck = true
 		}
 
-		firstDigit, operator, secondDigit = strings.ToUpper(splitInput[0]), splitInput[1], strings.ToUpper(splitInput[2])
+		firstDigit, operator, secondDigit = splitInput[0], splitInput[1], splitInput[2]
 
 		Utils.DigitsCheck(firstDigit, secondDigit, romansCheck, Utils.Romans)
 
@@ -41,6 +43,5 @@ func main() {
 
 		fmt.Println(res)
 
-		reader.Reset(reader) //добавил, потому что иногда паниковал без понятной причины
 	}
 }
