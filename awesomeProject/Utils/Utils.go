@@ -1,4 +1,4 @@
-package Utils
+package utils
 
 import (
 	"strconv"
@@ -34,14 +34,60 @@ func IntToRoman(num int) string {
 	return roman
 }
 
-func DigitsCheck(firstDigit string, secondDigit string, b bool, r map[string]int) {
-	var f, s int
+func Result(op string, f int, s int, b bool) string {
+	var r int
+
+	switch op {
+	case "+":
+		r = f + s
+	case "-":
+		r = f - s
+	case "*":
+		r = f * s
+	case "/":
+		r = f / s
+	default:
+		panic("Междy цифрами можно ставить только: + - * /")
+	}
+
+	if r < 1 && b {
+		panic("Римские не могут быть меньше единицы")
+	}
 	if b {
-		f = r[firstDigit]
-		s = r[secondDigit]
+		return IntToRoman(r)
+	}
+	return strconv.Itoa(r)
+}
+
+// GetDigits Проверяет, что числа соответствуют условию и возвращает их в int. Оператор оставляет в string
+func GetDigits(splitInput []string, b bool) (int, string, int) {
+	if len(splitInput) != 3 {
+		panic("неверный ввод")
+	}
+	firstDigit, operator, secondDigit := splitInput[0], splitInput[1], splitInput[2]
+
+	var f, s int
+	var err error
+	if b {
+		if _, ok := Romans[firstDigit]; !ok {
+			panic("Это не римская цифра")
+		} else {
+			f = Romans[firstDigit]
+		}
+		if _, ok := Romans[secondDigit]; !ok {
+			panic("Это не римская цифра")
+		} else {
+			s = Romans[secondDigit]
+		}
 	} else {
-		f, _ = strconv.Atoi(firstDigit)
-		s, _ = strconv.Atoi(secondDigit)
+		f, err = strconv.Atoi(firstDigit)
+		if err != nil {
+			panic("только числа от 1 до 10")
+		}
+		s, err = strconv.Atoi(secondDigit)
+		if err != nil {
+			panic("только числа от 1 до 10")
+		}
 	}
 
 	if f <= 0 || f > 10 || s <= 0 || s > 10 ||
@@ -49,34 +95,6 @@ func DigitsCheck(firstDigit string, secondDigit string, b bool, r map[string]int
 		strings.HasPrefix(firstDigit, "0") {
 		panic("Только целые числа от 1 до 10")
 	}
-}
 
-func Result(op string, f string, s string, b bool, m map[string]int) string {
-	var r, fd, sd int
-	if !b {
-		fd, _ = strconv.Atoi(f)
-		sd, _ = strconv.Atoi(s)
-	} else {
-		fd, _ = m[f]
-		sd, _ = m[s]
-	}
-	switch op {
-	case "+":
-		r = fd + sd
-	case "-":
-		r = fd - sd
-	case "*":
-		r = fd * sd
-	case "/":
-		r = fd / sd
-	default:
-		panic("Междy цифрами можно ставить только: + - * /")
-	}
-
-	if r < 1 && b {
-		panic("Римские не могут быть меньше единицы")
-	} else if b {
-		return IntToRoman(r)
-	}
-	return strconv.Itoa(r)
+	return f, operator, s
 }
